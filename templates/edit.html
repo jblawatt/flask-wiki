@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if preview %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card border-primary">
+                <div class="card-header">
+                    <strong>Vorschau</strong>
+                </div>
+                <div class="card-body">
+                    {{ preview.html|safe }}
+                </div>
+                <div class="card-footer">
+                    {% for tag in preview.tags %}
+                        <a href="{{tag.url}}" class="badge badge-primary">{{tag.name}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-file-text-o"></i>
+                    <strong>{{page.filename}}</strong>
+                    <br />
+                    <small>last changed {{page.last_changed}}</small>
+                </div>
+                <div class="card-body">
+                    <form action="" method="POST">
+                        <div class="form-group">
+                            {% if preview %}
+                            <textarea name="content" id="id-content" class="form-control" rows="25">{{preview.markdown}}</textarea>
+                            {% else %}
+                            <textarea name="content" id="id-content" class="form-control" rows="25">{{page.markdown}}</textarea>
+                            {% endif %}
+                        </div>
+                        <button type="submit" name="submit" value="save" class="btn btn-primary">Speichern</button>
+                        <button type="submit" name="submit" value="preview" class="btn btn-default">Vorschau</button>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    {% for tag in page.tags %}
+                        <a href="{{tag.url}}" class="badge badge-primary">{{tag.name}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
+    <script>
+        var smde = new SimpleMDE({ element: document.getElementById('id-content') })
+    </script>
+{% endblock %}

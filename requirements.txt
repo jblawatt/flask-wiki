@@ -1,0 +1,7 @@
+flask
+flask-assets
+blinker
+markdown
+markdown-checklist
+markdown-include
+markdown-full-yaml-metadata

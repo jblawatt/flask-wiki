@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content_header %}
+    <h2>
+        <a href="{{page.link}}">{{page.title}}</a>
+    </h2>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <i class="fa fa-file-text-o"></i>
+            <strong>{{page.filename}}</strong>
+            &nbsp;[&nbsp;<a href="_edit" >edit</a>&nbsp;]&nbsp;
+            <br />
+            <small>last changed {{page.last_changed}}</small>
+        </div>
+        <div class="card-body">
+            {{ page.html|safe }}
+        </div>
+        <div class="card-footer">
+            {% for tag in page.tags %}
+                <a href="{{tag.url}}" class="badge badge-primary">{{tag.name}}</a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

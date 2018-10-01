@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Alle Seiten
+    </div>
+    <div class="card-body" style="padding: 0">
+        <table class="table table-striped">
+            <tbody>
+                {% for page in pages %}
+                <tr>
+                    <td>
+                        <i class="fa fa-file-text-o"></i>
+                        <strong>
+                        <a href="{{page.url}}">{{page.filename}}</a>
+                        </strong>
+                    </td>
+                    <td>
+                        <small>
+                            {{page.summary|default('')}}
+                        </small>
+                    </td>
+                    <td>
+                        {{page.last_changed.strftime('%d.%m.%Y %H:%m')}} Uhr
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
