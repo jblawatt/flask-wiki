@@ -38,6 +38,7 @@
                             {% else %}
                             <textarea name="content" id="id-content" class="form-control" rows="25">{{page.markdown}}</textarea>
                             {% endif %}
+                            <div id="ace-editor"></div>
                         </div>
                         <button type="submit" name="submit" value="save" class="btn btn-primary">Speichern</button>
                         <button type="submit" name="submit" value="preview" class="btn btn-default">Vorschau</button>
@@ -51,9 +52,12 @@
             </div>
         </div>
     </div>
+    <!--
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
     <script>
         var smde = new SimpleMDE({ element: document.getElementById('id-content') })
     </script>
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/CodeFlask.js/1.2.1/codeflask.min.js"></script>
 {% endblock %}

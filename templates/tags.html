@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Alle Tags
+    </div>
+    <div class="card-body" style="padding: 0">
+        <table class="table table-striped">
+            <tbody>
+                {% for tag in tags %}
+                <tr>
+                    <td>
+                        <i class="fa fa-tag"></i>
+                        <strong>
+                            <a href="{{tag.url}}">{{tag.name}}</a>
+                        </strong>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
