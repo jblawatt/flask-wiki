@@ -3,3 +3,5 @@ pylint
 autopep8
 ipython
 mock
+pudb
+ipdb

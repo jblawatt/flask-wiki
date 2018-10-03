@@ -5,3 +5,4 @@ markdown
 markdown-checklist
 markdown-include
 markdown-full-yaml-metadata
+python-slugify

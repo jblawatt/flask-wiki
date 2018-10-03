@@ -10,18 +10,20 @@
             <tbody>
                 {% for page in pages %}
                 <tr>
-                    <td>
+                    <td class="no-wrap">
+                        <span>
                         <i class="fa fa-file-text-o"></i>
                         <strong>
                         <a href="{{page.url}}">{{page.filename}}</a>
                         </strong>
+                        </span>
                     </td>
                     <td>
                         <small>
                             {{page.summary|default('')}}
                         </small>
                     </td>
-                    <td>
+                    <td class="no-wrap">
                         {{page.last_changed.strftime('%d.%m.%Y %H:%m')}} Uhr
                     </td>
                 </tr>

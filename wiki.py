@@ -16,9 +16,13 @@ from typing import Iterable, List
 from markdown import Markdown
 from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown_include.include import MarkdownInclude
+from markdown_checklist.extension import makeExtension
+from markdown.extensions.admonition import AdmonitionExtension
 from full_yaml_metadata import FullYamlMetadataExtension
 from flask import Flask, render_template, url_for, request, redirect, before_render_template
 from flask_assets import Environment, Bundle
+from slugify import slugify
+
 
 app: Flask = Flask(__name__)
 assets: Environment = Environment(app=app)
@@ -26,10 +30,21 @@ assets: Environment = Environment(app=app)
 
 Page = namedtuple('Page', ('title', 'filename', 'last_changed',
                            'html', 'tags', 'markdown', 'summary', 'url', 'url_edit'))
+
 Tag = namedtuple('Tag', ('name', 'url'))
 
+
 DATA_ROOT = join(abspath(dirname(__name__)), 'data')
-BOOTSWATCH_THEME = 'flatly'
+BOOTSWATCH_THEME = None # 'flatly'
+NEW_PAGE_TEMPLATE = """
+---
+title: neue seite
+tags: 
+    - checklist
+---
+new page
+""".strip()
+
 
 
 def apply_default_context(sender, template, context, **extra):
@@ -39,17 +54,26 @@ def apply_default_context(sender, template, context, **extra):
 before_render_template.connect(apply_default_context, app)
 
 
+class PageDoesNotExists(Exception):
+    pass
+
+
+# -----------------------------------------------------------
+# -------------- Parser -------------------------------------
+
+
 def _create_md_instance() -> Markdown:
     return Markdown(extensions=[
-        'tables', 'extra', 'wikilinks', 'toc',
-        CodeHiliteExtension(noclasses=True, pygments_style='borland'),
         FullYamlMetadataExtension(),
+        'tables', 
+        'extra', 
+        'wikilinks', 
+        'toc',
+        'admonition',
+        CodeHiliteExtension(noclasses=True, pygments_style='borland'),
         MarkdownInclude(configs={'base_path': DATA_ROOT, 'encoding': 'utf-8'}),
         'markdown_checklist.extension'
     ])
-
-
-from markdown_checklist.extension import makeExtension
 
 
 def _parse_tags(tags: Iterable[str]) -> Iterable[Tag]:
@@ -60,7 +84,8 @@ def _parse_tags(tags: Iterable[str]) -> Iterable[Tag]:
 def _parse_page(content, filename=None, last_changed: datetime = None) -> Page:
     md = _create_md_instance()
     html = md.convert(content)
-    meta = md.Meta or dict(title='NEW', tags=[])
+    meta = md.Meta or dict()
+
     last_changed = last_changed or datetime.now()
     if filename:
         wiki_title, __ = splitext(filename)
@@ -74,12 +99,24 @@ def _parse_page(content, filename=None, last_changed: datetime = None) -> Page:
     )
 
 
+# -----------------------------------------------------------
+# -------------- Loader API Functions------------------------
+
+
 def load_page(name) -> Page:
     file_abspath = join(DATA_ROOT, '%s.md' % name)
-    stats = os.stat(file_abspath)
+    if not os.path.exists(file_abspath):
+        raise PageDoesNotExists(name)
+    stats = os.stat(file_abspath) 
     last_modified = datetime.fromtimestamp(stats.st_mtime)
     with open(file_abspath, 'r', encoding='utf-8') as content:
         return _parse_page(content.read(), '%s.md' % name, last_modified)
+
+
+def new_page(name) -> Page:
+    return Page(
+        '', '%s.md' % name, datetime.now(), '', [], NEW_PAGE_TEMPLATE, '', '', ''
+    )
 
 
 def load_pages(tags: List[str] = None):
@@ -114,6 +151,10 @@ def load_tags() -> Iterable[Tag]:
         for tag in page.tags:
             tags.add(tag)
     return sorted(tags, key=lambda t: t.name)
+
+
+# -----------------------------------------------------------
+# -------------- Views --------------------------------------
 
 
 @app.route('/')
@@ -154,8 +195,15 @@ def view(wiki_title) -> str:
 
 @app.route('/<wiki_title>/_edit', methods=['GET', 'POST'])
 def edit(wiki_title) -> str:
+    if not page_exists(wiki_title):
+        if wiki_title != slugify(wiki_title):
+            redirect_url = url_for('edit', wiki_title=slugify(wiki_title))
+            return redirect(redirect_url)
     if request.method == 'GET':
-        page = load_page(name=wiki_title)
+        if page_exists(wiki_title):
+            page = load_page(name=wiki_title)
+        else:
+            page = new_page(name=wiki_title)
         return render_template('edit.html', page=page)
     else:
         content = request.form['content']
@@ -168,6 +216,35 @@ def edit(wiki_title) -> str:
             save_page(wiki_title, content)
             redirect_url = url_for('view', wiki_title=wiki_title)
             return redirect(redirect_url)
+
+
+@app.route('/_new')
+def new():
+    name = request.args.get('name')
+    name = slugify(name)
+    url = url_for('edit', wiki_title=name)
+    return redirect(url)
+
+
+@app.route('/_files')
+def files():
+    # list files
+    pass
+
+
+@app.route('/_files/<filename>')
+def file_(name):
+    pass
+
+
+@app.route('/_debug')
+def debug():
+    resp = []
+    for key in request.headers.keys():
+        tpl = " -> ".join((key, request.headers.get(key)))
+        resp.append(tpl)
+    return "<br />".join(resp)
+    
 
 
 if __name__ == '__main__':

@@ -7,7 +7,14 @@ vendor:
 
 pythonenv:
 	python3 -m venv pythonenv
-	pythonenv/bin/pip install -r requirements.txt -requirements-dev.txt --upgrade
+	pythonenv/bin/pip install -r requirements.txt -r requirements-dev.txt --upgrade
 
 serve: pythonenv
 	WERKZEUG_DEBUG_PIN=off pythonenv/bin/python wiki.py
+
+
+clean:
+	rm -rf
+
+
+.PHONY: pythonenv
