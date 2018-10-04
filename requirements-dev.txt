@@ -5,3 +5,4 @@ ipython
 mock
 pudb
 ipdb
+flask-debugtoolbar
