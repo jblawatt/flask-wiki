@@ -1,4 +1,13 @@
 
+#
+# TODO:
+# - Revision
+# - Delete
+# - Storages
+# - Cache
+# - Debug Toobar
+# 
+
 import os
 import string
 import functools
