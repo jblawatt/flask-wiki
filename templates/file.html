@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <small class="float-right">last changed {{file.last_changed}}</small>
+        {% if file.is_image %}
+        <i class="fa fa-image"></i>
+        {% else %}
+        <i class="fa fa-file"></i>
+        {% endif %}
+        <strong>{{file.name}}</strong>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                {% if file.is_image %}
+                    <a href="{{ file.raw_url }}" target="_blank">
+                        <img src="{{ file.url }}" alt="{{ file.name }}" class="img-thumbnail">
+                    </a>
+                {% else %}
+                    Download <a href="{{ file.raw_url }}">{{file.name}}</a>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        <form action="" method="post" class="form form-inline" enctype="multipart/form-data">
+            <input type="file" name="file" class="form-control">
+            <br>
+            <button type="submit" class="btn btn-primary">hochladen</button>
+        </form>
+    </div>
+    <div class="card-footer">
+        
+    </div>
+</div>
+{% endblock %}

@@ -10,12 +10,12 @@
             <tbody>
                 {% for page in pages %}
                 <tr>
-                    <td class="no-wrap">
+                    <td class="no-wrap" style="overflow: hidden; text-overflow: ellipsis; max-width: 250px">
                         <span>
-                        <i class="fa fa-file-text-o"></i>
-                        <strong>
+                        <i class="fa fa-file-alt"></i>
+                        
                         <a href="{{page.url}}">{{page.filename}}</a>
-                        </strong>
+                        
                         </span>
                     </td>
                     <td>
@@ -23,7 +23,7 @@
                             {{page.summary|default('')}}
                         </small>
                     </td>
-                    <td class="no-wrap">
+                    <td class="no-wrap" style="overflow: hidden; text-overflow: ellipsis; max-width: 25%">
                         {{page.last_changed.strftime('%d.%m.%Y %H:%m')}} Uhr
                     </td>
                 </tr>

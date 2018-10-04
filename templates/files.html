@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Alle Dateien
+    </div>
+    <div class="card-body" style="padding: 0">
+        <table class="table table-striped">
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td class="no-wrap" style="overflow: hidden; text-overflow: ellipsis; max-width: 250px">
+                        <span>
+                        {% if file.is_image %}
+                            <i class="fa fa-image"></i>
+                        {% else %}
+                            <i class="fa fa-file"></i>
+                        {% endif %}
+                        <strong>
+                        <a href="{{file.url}}">{{file.name}}</a>
+                        </strong>
+                        </span>
+                    </td>
+                    <td>
+                        {{file.mimetype}}
+                    </td>
+                    <td class="no-wrap" style="overflow: hidden; text-overflow: ellipsis; max-width: 25%">
+                        {{file.last_changed.strftime('%d.%m.%Y %H:%m')}} Uhr
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
