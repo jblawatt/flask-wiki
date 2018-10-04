@@ -14,3 +14,7 @@ textarea, div.codehilite, pre {
 .no-wrap {
     white-space: nowrap;
 }
+
+body img {
+    max-width: 100%;
+}
